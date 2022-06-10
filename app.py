@@ -86,7 +86,7 @@ def rand_object_result(num):
 
     blue_min = 35
     blue_max = 97
-    blue = randint(blue_min, blue_max + 1)
+    blue = randint(blue_min, blue_max)
     red_max = (100 - blue) / 2
     if red_max % 1:
         red_max = int(red_max)
@@ -99,7 +99,7 @@ def rand_object_result(num):
         red_min = floor(red_min)
     if blue == 35:  # catching exception
         red_min = red_max = 32
-    red = randint(red_min, red_max + 1)
+    red = randint(red_min, red_max)
     green = 100 - blue - red
     if not blue - green > green - red:
         print('wrong difference')
