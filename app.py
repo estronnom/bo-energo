@@ -1,5 +1,5 @@
 from flask import Flask
-from math import sqrt, ceil
+from math import sqrt, ceil, floor
 from random import randint, shuffle
 
 app = Flask(__name__)
@@ -22,8 +22,8 @@ def quad_eq_overview():
 def quad_eq_solver(a, b, c):
     response = dict()
     response['solutions_num'] = 0
-    try:
 
+    try:
         a, b, c = float(a.replace(',', '.')), \
                   float(b.replace(',', '.')), \
                   float(c.replace(',', '.'))
@@ -55,7 +55,12 @@ def quad_eq_solver(a, b, c):
 
 @app.route('/rand_object/')
 def rand_object():
-    return 'pass'
+    return {
+        "message": "Этот эндпоинт решает вторую тестовую задачку. Чтобы "
+                   "приложение попыталось угадать цвет предмета "
+                   "введите его в URL сайта в следующем формате "
+                   "'..../rand_object/номер предмета'"
+    }
 
 
 @app.route('/rand_object/<num>')
@@ -64,19 +69,37 @@ def rand_object_result(num):
         num = int(num)
         assert 1 <= num <= 100
     except ValueError:
-        return {'error': 'Введенное число некорректно'}
+        return {
+            "error": "Введенное число некорректно"
+        }
     except AssertionError:
-        return {'error': 'Число должно быть в диапозоне от 1 до 100 '
-                         'включительно'}
+        return {
+            'error': 'Число должно быть в диапозоне от 1 до 100 включительно'
+        }
 
-    while True:
-        blue = randint(33, 98)
-        green = randint(ceil((100 - blue) / 2), 99 - blue)
-        red = 100 - green - blue
-        if blue - green > green - red:
-            stack = ['Синий'] * blue + ['Зеленый'] * green + ['Красный'] * red
-            shuffle(stack)
-            return f'{stack[num - 1]}'
+    blue = randint(35, 98)  # blue can be from 35 to 97
+    red_max = (100 - blue) / 2
+    if red_max % 1:
+        red_max = int(red_max)
+    else:
+        red_max = int(red_max) - 1
+    red_min = (98 - blue) // 2
+    if int(red_min) % 2:
+        red_min = ceil(red_min)
+    else:
+        red_min = floor(red_min)
+    if blue == 35:  # catching exception
+        red_min = red_max = 32
+    red = randint(red_min, red_max + 1)
+    green = 100 - blue - red
+    if not blue - green > green - red:
+        print('wrong diff')
+
+    stack = ['Синий'] * blue + ['Зеленый'] * green + ['Красный'] * red
+    shuffle(stack)
+    return {
+        "color": f"{stack[num - 1]}"
+    }
 
 
 if __name__ == '__main__':
