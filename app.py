@@ -15,7 +15,7 @@ def index():
 def quad_eq_overview():
     return {'message': 'Этот эндпоинт решает квадратное уравнение: '
                        'введите коэффициенты a, b и c в URL сайта'
-                       ' ..../quad_eqiation/a/b/c'}
+                       ' ..../quad_equation/a/b/c'}
 
 
 @app.route('/quad_equation/<a>/<b>/<c>')
@@ -77,7 +77,16 @@ def rand_object_result(num):
             'error': 'Число должно быть в диапозоне от 1 до 100 включительно'
         }
 
-    blue = randint(35, 98)  # blue can be from 35 to 97
+    '''
+    blue + green + red = 100
+    "сильно больше" > "немного больше"
+    blue - green > green - red
+    blue can be from 35 to 97
+    '''
+
+    blue_min = 35
+    blue_max = 97
+    blue = randint(blue_min, blue_max + 1)
     red_max = (100 - blue) / 2
     if red_max % 1:
         red_max = int(red_max)
@@ -93,12 +102,16 @@ def rand_object_result(num):
     red = randint(red_min, red_max + 1)
     green = 100 - blue - red
     if not blue - green > green - red:
-        print('wrong diff')
+        print('wrong difference')
 
     stack = ['Синий'] * blue + ['Зеленый'] * green + ['Красный'] * red
     shuffle(stack)
+
     return {
-        "color": f"{stack[num - 1]}"
+        "blue_items": blue,
+        "green_items": green,
+        "red_items": red,
+        "guess_color": f"{stack[num - 1]}"
     }
 
 
